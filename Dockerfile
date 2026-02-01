@@ -52,3 +52,5 @@ WORKDIR /root/sbox
 RUN DISPLAY=:0 xvfb-run -a -s "-screen 0 1024x768x24" wine dotnet run --project ./engine/Tools/SboxBuild/SboxBuild.csproj -- build --config Developer && \
 	DISPLAY=:0 xvfb-run -a -s "-screen 0 1024x768x24" wine dotnet run --project ./engine/Tools/SboxBuild/SboxBuild.csproj -- build-shaders && \
 	DISPLAY=:0 xvfb-run -a -s "-screen 0 1024x768x24" wine dotnet run --project ./engine/Tools/SboxBuild/SboxBuild.csproj -- build-content
+
+VOLUME /root/sbox
