@@ -6,6 +6,7 @@ Bootstrap compiler for s&box on Linux. Works like `Bootstrap.bat` on Windows - j
 
 - **Docker** or **Podman**
 - Local clone of [sbox-public](https://github.com/Facepunch/sbox-public)
+- Docker permissions: `sudo usermod -aG docker $USER` and relogin, or run script with sudo
 
 ## Quick Start
 
