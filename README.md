@@ -1,56 +1,51 @@
 # sbox-public-linux-docker
 
+Bootstrap compiler for s&box on Linux. Works like `Bootstrap.bat` on Windows - just compile your local source code.
+
 ## Prerequisites
 
-- **Docker** or **Podman** (either works)
-- **Git**
-- Arch users may need to install `docker-buildx` separately
+- **Docker** or **Podman**
+- Local clone of [sbox-public](https://github.com/Facepunch/sbox-public)
 
 ## Quick Start
 
 ```bash
-# Clone this repository
+# Clone this repo and the sbox-public repo
 git clone https://github.com/tsktp/sbox-public-linux-docker.git
+git clone https://github.com/Facepunch/sbox-public.git
+
+# Compile your local sbox-public source
 cd sbox-public-linux-docker
+./sbox-install.sh compile ~/Documents/sbox-public
 
-# Build the Docker image (first time only, takes 10-15 minutes)
-docker build -t sbox-public-builder .
-
-# Compile s&box from source to a directory
-./sbox-install.sh compile /path/to/sbox-public
+# Or compile current directory
+./sbox-install.sh compile .
 ```
 
-## Usage
+## How It Works
 
-### Main Commands
+1. **Builds a container** with Wine + Windows .NET 10 SDK (one time setup)
+2. **Mounts your local sbox-public** directory into the container
+3. **Compiles using the container's** Windows environment
+4. **Outputs go back to your directory** just like on Windows
+
+## Commands
 
 ```bash
-# Compile s&box from source (first run: 10-20 minutes, subsequent: 1-2 minutes)
-./sbox-install.sh compile /path/to/sbox-public
-
-# Open a debugging shell in the build environment
-./sbox-install.sh shell /path/to/sbox-public
-
-# Rebuild the container image (update dependencies)
-./sbox-install.sh update
-
-# Show help
-./sbox-install.sh help
+./sbox-install.sh compile [dir]    # Compile your local sbox source
+./sbox-install.sh shell [dir]      # Open shell in build environment
+./sbox-install.sh help             # Show help
 ```
 
-### Manual Docker Usage
+## Why Docker?
 
-If you prefer to use Docker directly without the helper script:
+s&box build tools are Windows applications requiring:
+- Windows .NET 10 SDK (not Linux version)
+- Wine with specific Windows components
+- Registry, DLLs, and winetricks packages
 
-```bash
-# Build the image
-docker build -t sbox-public-builder .
+Docker isolates this Windows emulation mess so it doesn't pollute your system. The alternative is configuring Wine manually (which often fails with cryptic errors).
 
-# Run interactive shell
-docker run -it --rm -v /path/to/sbox-public:/root/sbox sbox-public-builder
+## Troubleshooting
 
-# Inside container, run builds manually:
-cd /root/sbox
-export WINEDEBUG=-all
-xvfb-run -a -s "-screen 0 1024x768x24" wine dotnet run --project ./engine/Tools/SboxBuild/SboxBuild.csproj -- build --config Developer
-```
+**Case-sensitive filesystem issues:** If you have both `code` and `Code` folders (common on Linux), the script automatically removes the lowercase duplicate to prevent compilation errors.
