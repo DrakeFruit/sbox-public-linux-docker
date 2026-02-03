@@ -1,12 +1,10 @@
 # sbox-public-linux-docker
 
-Bootstrap compiler for s&box on Linux. Works like `Bootstrap.bat` on Windows - just compile your local source code.
-
 ## Prerequisites
 
 - **Docker** or **Podman**
 - Local clone of [sbox-public](https://github.com/Facepunch/sbox-public)
-- Docker permissions: `sudo usermod -aG docker $USER` and relogin, or run script with sudo
+- Docker permissions: `sudo usermod -aG docker $USER` then run 'newgrp docker' or log out and back in
 
 ## Quick Start
 
@@ -46,7 +44,3 @@ s&box build tools are Windows applications requiring:
 - Registry, DLLs, and winetricks packages
 
 Docker isolates this Windows emulation mess so it doesn't pollute your system. The alternative is configuring Wine manually (which often fails with cryptic errors).
-
-## Troubleshooting
-
-**Case-sensitive filesystem issues:** If you have both `code` and `Code` folders (common on Linux), the script automatically removes the lowercase duplicate to prevent compilation errors.
