@@ -34,15 +34,12 @@ ENGINE=$(detect_engine)
 if [ -z "$ENGINE" ]; then echo "Error: No container engine found."; exit 1; fi
 
 COMMAND=$1
-# Dir is 2nd arg; if empty, use current directory
 BUILD_DIR="${2:-$(pwd)}"
 
-# Resolve paths and tilde expansion
 if [[ "$BUILD_DIR" == ~* ]]; then BUILD_DIR="${BUILD_DIR/\~/$HOME}"; fi
 if [ ! -d "$BUILD_DIR" ]; then echo "Error: Directory not found: $BUILD_DIR"; exit 1; fi
 BUILD_DIR=$(cd "$BUILD_DIR" && pwd)
 
-# Ensure Image Exists
 if ! $ENGINE image inspect "$IMAGE_NAME" >/dev/null 2>&1; then
     echo "Setting up build environment..."
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -53,11 +50,18 @@ fi
 run_build() {
     local task=$1
     local task_label=$2
+    local extra_args=""
+
+    # Only the main 'build' task uses --config
+    if [ "$task" == "build" ]; then
+        extra_args="--config Developer"
+    fi
+
     echo "----------------------------------------"
     echo "==> $task_label"
     echo "----------------------------------------"
-    $ENGINE run --rm -t -v "$BUILD_DIR:/root/sbox" -e WINEDEBUG=-all "$IMAGE_NAME" \
-        /bin/bash -c "cd /root/sbox && xvfb-run -a -s '-screen 0 1024x768x24' wine dotnet run --project ./engine/Tools/SboxBuild/SboxBuild.csproj -- $task --config Developer 2>&1"
+    $ENGINE run --rm -t -v "$BUILD_DIR:/root/sbox" -e WINEDEBUG=-all -e DOTNET_CLI_TELEMETRY_OPTOUT=1 "$IMAGE_NAME" \
+        /bin/bash -c "cd /root/sbox && xvfb-run -a -s '-screen 0 1024x768x24' wine dotnet run --project ./engine/Tools/SboxBuild/SboxBuild.csproj -- $task $extra_args 2>&1"
 }
 
 fix_perms() {
