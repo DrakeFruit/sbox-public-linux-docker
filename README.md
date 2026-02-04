@@ -31,7 +31,10 @@ cd sbox-public-linux-docker
 ## Commands
 
 ```bash
-./sbox-install.sh compile [dir]    # Compile your local sbox source
+./sbox-install.sh compile [dir]    # Full build: engine -> shaders -> content
+./sbox-install.sh engine [dir]     # Compile only the engine
+./sbox-install.sh shaders [dir]    # Compile only the shaders
+./sbox-install.sh content [dir]    # Compile only the content
 ./sbox-install.sh shell [dir]      # Open shell in build environment
 ./sbox-install.sh help             # Show help
 ```
