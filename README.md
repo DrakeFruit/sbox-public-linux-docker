@@ -4,7 +4,9 @@
 
 - **Docker** or **Podman**
 - Local clone of [sbox-public](https://github.com/Facepunch/sbox-public)
-- Docker permissions: `sudo usermod -aG docker $USER` then run 'newgrp docker' or log out and back in
+- Docker permissions: `sudo usermod -aG docker $USER` then run `newgrp docker` or log out and back in
+- `wine git config --global --add safe.directory ~/sbox-public`
+- `wine git config --global --add safe.directory "*"`
 
 ## Quick Start
 
